@@ -9,5 +9,6 @@ namespace TestProject.Domain.Entities
         public string Email { get; set; }
         public decimal MonthlySalary { get; set; }
         public decimal MonthlyExpenses { get; set; }
+        public Account? Account { get; set; }
     }
 }
