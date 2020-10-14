@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,29 +8,28 @@ using TestProject.Application.Common.Interfaces;
 using TestProject.Application.Common.Models;
 using TestProject.Domain.Entities;
 
-namespace TestProject.Application.Users.Queries.ListUsers
+namespace TestProject.Application.Accounts.Queries.ListAccounts
 {
-    public class ListUsersQuery : IRequest<PaginatedList<User>>
+    public class ListAccountsQuery : IRequest<PaginatedList<Account>>
     {
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
 
-        public class ListUsersQueryHandler : IRequestHandler<ListUsersQuery, PaginatedList<User>>
+        public class ListAccountsQueryHandler : IRequestHandler<ListAccountsQuery, PaginatedList<Account>>
         {
             private readonly IDatabaseContext context;
 
-            public ListUsersQueryHandler(IDatabaseContext context)
+            public ListAccountsQueryHandler(IDatabaseContext context)
             {
-                this.context = context ?? throw new System.ArgumentNullException(nameof(context));
+                this.context = context ?? throw new ArgumentNullException(nameof(context));
             }
 
-            public async Task<PaginatedList<User>> Handle(ListUsersQuery request, CancellationToken cancellationToken)
+            public async Task<PaginatedList<Account>> Handle(ListAccountsQuery request, CancellationToken cancellationToken)
             {
-                return await context.Users
+                return await context.Accounts
                     .OrderBy(e => e.Id)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);
             }
         }
-
     }
 }

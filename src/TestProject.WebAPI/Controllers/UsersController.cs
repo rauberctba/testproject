@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using TestProject.Application.Users.CreateUser;
 using TestProject.Application.Users.Queries.GetUser;
@@ -15,9 +16,8 @@ namespace TestProject.WebAPI.Controllers
 
         public UsersController(IMediator mediator)
         {
-            this.mediator = mediator;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserCommand command)

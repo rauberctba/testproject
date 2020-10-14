@@ -13,11 +13,6 @@ namespace TestProject.Infrastructure.Database.Configurations
 
             builder.Property(e => e.CreditScore)
                 .IsRequired();
-
-            builder
-                .HasOne(e => e.User)
-                .WithOne(e => e.Account)
-                .HasForeignKey<Account>(e => e.UserId);
         }
     }
 }
