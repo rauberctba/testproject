@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TestProject.Application;
 using TestProject.Infrastructure;
+using TestProject.WebAPI.Filters;
 
 namespace TestProject.WebAPI
 {
@@ -21,11 +22,12 @@ namespace TestProject.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplication();
             services.AddInfrastructure(Configuration);
+            services.AddApplication();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            services.AddControllers();
+            services.AddControllers(options => 
+                options.Filters.Add(new ApiExceptionFilterAttribute()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

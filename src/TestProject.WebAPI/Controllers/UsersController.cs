@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TestProject.Application.Users.CreateUser;
+using TestProject.Application.Users.Queries.GetUser;
+using TestProject.Application.Users.Queries.ListUsers;
 
 namespace TestProject.WebAPI.Controllers
 {
@@ -23,6 +25,23 @@ namespace TestProject.WebAPI.Controllers
             var user = await mediator.Send(command);
 
             return Created($"/api/users/{user.Id}", user);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> List([FromQuery] ListUsersQuery query)
+        {
+            var pagedList = await mediator.Send(query);
+            return Ok(pagedList);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var user = await mediator.Send(new GetUserQuery { Id = id });
+
+            return user != null 
+                ? Ok(user) 
+                : (IActionResult)NotFound();
         }
     }
 }

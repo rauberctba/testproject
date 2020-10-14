@@ -10,10 +10,20 @@ namespace TestProject.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly(typeof(DatabaseContext).Assembly.FullName)));
+            var useInMemoryDatabase = configuration.GetValue<bool>("UseInMemoryDatabase");
+
+            if(useInMemoryDatabase)
+            {
+                services.AddDbContext<DatabaseContext>(options =>
+                    options.UseInMemoryDatabase("TestProjectDb"));
+            } 
+            else
+            {
+                services.AddDbContext<DatabaseContext>(options =>
+                    options.UseSqlServer(
+                        configuration.GetConnectionString("DefaultConnection"),
+                        b => b.MigrationsAssembly(typeof(DatabaseContext).Assembly.FullName)));
+            }
 
             services.AddScoped<IDatabaseContext>(provider => provider.GetService<DatabaseContext>());
             return services;

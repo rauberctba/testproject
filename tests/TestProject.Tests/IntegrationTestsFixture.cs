@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using TestProject.WebAPI;
@@ -15,9 +16,11 @@ namespace TestProject.Tests
         public IntegrationTestsFixture()
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true)
-                .AddEnvironmentVariables();
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "UseInMemoryDatabase", "true" }
+                });
+
 
             configuration = builder.Build();
             var services = new ServiceCollection();
