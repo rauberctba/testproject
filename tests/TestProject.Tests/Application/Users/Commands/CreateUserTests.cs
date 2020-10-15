@@ -1,8 +1,10 @@
 ﻿using FluentAssertions;
 using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TestProject.Application.Users.CreateUser;
+using TestProject.Domain.Entities;
 using Xunit;
 
 namespace TestProject.Tests.Users.Commands
@@ -13,7 +15,7 @@ namespace TestProject.Tests.Users.Commands
 
         public CreateUserTests(IntegrationTestsFixture fixture)
         {
-            this.fixture = fixture;
+            this.fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }
 
         [Theory]
@@ -30,6 +32,31 @@ namespace TestProject.Tests.Users.Commands
             await fixture.SendAsync(command);
 
             FluentActions.Invoking(() => fixture.SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
+        [Fact]
+        public async Task ShouldPersistAndReturnAUser()
+        {
+            var command = new CreateUserCommand
+            {
+                Email = "fake@email.com",
+                MonthlyExpenses = 50,
+                MonthlySalary = 400,
+                Name = "Fake user"
+            };
+
+            var response = await fixture.SendAsync(command);
+
+            var expectedUser = new User
+            {
+                Id = response.Id,
+                Email = command.Email,
+                MonthlyExpenses = command.MonthlyExpenses,
+                MonthlySalary = command.MonthlySalary,
+                Name = command.Name
+            };
+
+            response.Should().BeEquivalentTo(expectedUser);
         }
 
 
